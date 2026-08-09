@@ -9,13 +9,15 @@ Copies the BUILT site, then makes it safe to share:
   - the A2 folder prototype mounted at /a2/ until P1 integrates it as the index
 Rerun after every washington-site build:  python3 staging_build.py
 """
-import pathlib, re, shutil, time
+import pathlib, re, shutil, subprocess, time
 
 SITE = pathlib.Path.home()/"Documents/GitHub/washington-site"
 LAB  = pathlib.Path.home()/"Desktop/washington-design-lab/out/opt-a2-editorial.html"
 HERE = pathlib.Path(__file__).resolve().parent
 BASE = "/washington-staging"
 
+BRANCH = subprocess.run(["git","-C",str(pathlib.Path.home()/"Documents/GitHub/washington-site"),
+    "branch","--show-current"],capture_output=True,text=True).stdout.strip() or "?"
 RIBBON = ('<div style="position:fixed;left:0;right:0;top:0;z-index:99999;background:#F74D3A;'
  'color:#fff;font:700 12px/1.4 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:.08em;'
  'text-transform:uppercase;padding:.4rem 1rem;text-align:center">Staging &#183; not the live site '
