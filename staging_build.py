@@ -40,7 +40,7 @@ for rel in PAGES:
     dst.write_text(h)
     print("staged", rel)
 
-for asset in ["logo.png","og-image.png"]:
+for asset in ["logo.png","og-image.png","paper-blue.jpg"]:
     shutil.copy(SITE/asset, HERE/asset)
 (HERE/"robots.txt").write_text("User-agent: *\nDisallow: /\n")
 (HERE/"a2").mkdir(exist_ok=True)
