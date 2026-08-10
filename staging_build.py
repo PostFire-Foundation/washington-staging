@@ -21,7 +21,7 @@ BRANCH = subprocess.run(["git","-C",str(pathlib.Path.home()/"Documents/GitHub/wa
 RIBBON = ('<div style="position:fixed;left:0;right:0;top:0;z-index:99999;background:#F74D3A;'
  'color:#fff;font:700 12px/1.4 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:.08em;'
  'text-transform:uppercase;padding:.4rem 1rem;text-align:center">Staging &#183; not the live site '
- '&#183; forms + analytics disabled &#183; built ' + time.strftime("%b %d, %H:%M PT") + '</div>'
+ '&#183; forms + analytics disabled &#183; branch ' + BRANCH + ' &#183; built ' + time.strftime("%b %d, %H:%M PT") + '</div>'
  '<style>body{margin-top:2rem}</style>')
 
 PAGES = ["index.html","es/index.html","ru/index.html","uk/index.html","loved-ones/index.html"]
