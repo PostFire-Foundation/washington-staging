@@ -234,7 +234,17 @@ footer .stamp2{text-transform:uppercase;letter-spacing:.12em;font-size:.75rem;ma
   background-size:auto,auto,760px auto;background-repeat:no-repeat,no-repeat,repeat}
 .tabshape{background-position:center top,center top,center calc(-1 * var(--step) * var(--i))}
 .edge{background-position:center top,center top,center calc(-1 * (var(--step) * var(--i) + var(--tab-h)))}
-.rail{position:sticky;top:0;z-index:40;display:flex;flex-direction:column}
+/* The rail pins BELOW the sticky topbar, never over it — Patty caught the two
+   sticky elements colliding (rail z-40 was painting over the header on scroll).
+   --tb is the topbar's measured height, set by JS at load/resize; z stays under
+   the topbar's 30 so the header always wins the paint order. */
+/* The rail needs its own backdrop: the tab shapes are clipped, so everything
+   around them is a transparent window — without a backdrop, the open folder's
+   content scrolls up behind the pinned tabs and reads THROUGH the gaps (Patty's
+   'still ain't right' screenshot). The lab always had this fade; the port
+   dropped it. Paper fading to transparent over the last 8%, same as the lab. */
+.rail{position:sticky;top:var(--tb,52px);z-index:5;display:flex;flex-direction:column;
+  background:linear-gradient(var(--paper) 92%,rgba(247,240,234,0))}
 .layer{position:relative;display:block;cursor:pointer;padding-top:var(--tab-h);
   margin-bottom:calc(var(--step) - var(--tab-h) - var(--edge-h));
   --dim:rgba(9,24,48,.10);transition:transform 380ms cubic-bezier(.22,.7,.2,1)}
@@ -319,6 +329,15 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
 .stackwrap #gofundme .sectionhead .ox{color:var(--paper)}
 /* Patty 8/9: ash intro gap matches its block gap, same rule as basics/scams */
 .stackwrap #ash .lead{margin-bottom:1.5rem}
+/* Re-entry rhythm, inferred from Patty's session rules (equal zone gaps; real
+   paragraph breaks; internal < block < zone): paragraphs .9rem, blocks 2.2rem,
+   zone transitions 2.4rem matching the checklist's own item rhythm. */
+.stackwrap #reentry .lead{max-width:34rem}
+.stackwrap #reentry .lead+.lead{margin-top:1.2rem;margin-bottom:2.4rem}
+.stackwrap #reentry .item p{max-width:34rem}
+.stackwrap #reentry p.tell{max-width:34rem}
+.stackwrap #reentry .tell+.tell{margin-top:.9rem}
+.stackwrap #reentry .scam{margin-bottom:2.2rem}
 /* Patty 8/9: basics accents to Paper white — her call, to see it on the tone.
    Measured ~2.6:1 on the basics ground at display size; noted, applied as directed. */
 .stackwrap #basics .item .num{color:var(--paper)}
@@ -334,10 +353,10 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   .stackwrap{--tab-h:1.5rem;--edge-h:3.5rem;--step:1.25rem;--tw:7.6rem;--sh:10px;--tr:7px;--fr:12px}
   .label{font-size:.56rem;letter-spacing:.06em}
 }
-/*STACK:STATE*/#s0:checked ~ .stackwrap #status{display:block;animation:sheetIn 260ms ease both}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1){transform:translateY(calc(var(--step) * 5));--dim:transparent;z-index:20}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1) .edge{box-shadow:none}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1) .label{font-weight:800;letter-spacing:.1em}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(2){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap #basics{display:block;animation:sheetIn 260ms ease both}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2){transform:translateY(calc(var(--step) * 4));--dim:transparent;z-index:20}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2) .edge{box-shadow:none}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2) .label{font-weight:800;letter-spacing:.1em}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap #scams{display:block;animation:sheetIn 260ms ease both}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * 3));--dim:transparent;z-index:20}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3) .edge{box-shadow:none}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3) .label{font-weight:800;letter-spacing:.1em}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s3:checked ~ .stackwrap #gofundme{display:block;animation:sheetIn 260ms ease both}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * 2));--dim:transparent;z-index:20}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4) .edge{box-shadow:none}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4) .label{font-weight:800;letter-spacing:.1em}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s4:checked ~ .stackwrap #ash{display:block;animation:sheetIn 260ms ease both}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * 1));--dim:transparent;z-index:20}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5) .edge{box-shadow:none}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5) .label{font-weight:800;letter-spacing:.1em}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s5:checked ~ .stackwrap #resources{display:block;animation:sheetIn 260ms ease both}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * 0));--dim:transparent;z-index:20}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6) .edge{box-shadow:none}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6) .label{font-weight:800;letter-spacing:.1em}#s0:focus-visible ~ .stackwrap .rail .layer:nth-of-type(1) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s1:focus-visible ~ .stackwrap .rail .layer:nth-of-type(2) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}#s2:focus-visible ~ .stackwrap .rail .layer:nth-of-type(3) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s3:focus-visible ~ .stackwrap .rail .layer:nth-of-type(4) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}#s4:focus-visible ~ .stackwrap .rail .layer:nth-of-type(5) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s5:focus-visible ~ .stackwrap .rail .layer:nth-of-type(6) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}/*/STACK:STATE*/
+/*STACK:STATE*/#s0:checked ~ .stackwrap #reentry{display:block;animation:sheetIn 260ms ease both}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1){transform:translateY(calc(var(--step) * 6));--dim:transparent;z-index:20}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1) .edge{box-shadow:none}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(1) .label{font-weight:800;letter-spacing:.1em}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(2){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s0:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap #status{display:block;animation:sheetIn 260ms ease both}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2){transform:translateY(calc(var(--step) * 5));--dim:transparent;z-index:20}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2) .edge{box-shadow:none}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(2) .label{font-weight:800;letter-spacing:.1em}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s1:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap #basics{display:block;animation:sheetIn 260ms ease both}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3){transform:translateY(calc(var(--step) * 4));--dim:transparent;z-index:20}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3) .edge{box-shadow:none}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(3) .label{font-weight:800;letter-spacing:.1em}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s2:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s3:checked ~ .stackwrap #scams{display:block;animation:sheetIn 260ms ease both}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4){transform:translateY(calc(var(--step) * 3));--dim:transparent;z-index:20}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4) .edge{box-shadow:none}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(4) .label{font-weight:800;letter-spacing:.1em}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * -1))}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s3:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s4:checked ~ .stackwrap #gofundme{display:block;animation:sheetIn 260ms ease both}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5){transform:translateY(calc(var(--step) * 2));--dim:transparent;z-index:20}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5) .edge{box-shadow:none}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(5) .label{font-weight:800;letter-spacing:.1em}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * -1))}#s4:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s5:checked ~ .stackwrap #ash{display:block;animation:sheetIn 260ms ease both}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6){transform:translateY(calc(var(--step) * 1));--dim:transparent;z-index:20}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6) .edge{box-shadow:none}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(6) .label{font-weight:800;letter-spacing:.1em}#s5:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * -1))}#s6:checked ~ .stackwrap #resources{display:block;animation:sheetIn 260ms ease both}#s6:checked ~ .stackwrap .rail .layer:nth-of-type(7){transform:translateY(calc(var(--step) * 0));--dim:transparent;z-index:20}#s6:checked ~ .stackwrap .rail .layer:nth-of-type(7) .edge{box-shadow:none}#s6:checked ~ .stackwrap .rail .layer:nth-of-type(7) .label{font-weight:800;letter-spacing:.1em}#s0:focus-visible ~ .stackwrap .rail .layer:nth-of-type(1) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s1:focus-visible ~ .stackwrap .rail .layer:nth-of-type(2) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s2:focus-visible ~ .stackwrap .rail .layer:nth-of-type(3) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}#s3:focus-visible ~ .stackwrap .rail .layer:nth-of-type(4) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s4:focus-visible ~ .stackwrap .rail .layer:nth-of-type(5) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}#s5:focus-visible ~ .stackwrap .rail .layer:nth-of-type(6) .tablabel{outline:2px solid var(--paper);outline-offset:-5px;border-radius:7px}#s6:focus-visible ~ .stackwrap .rail .layer:nth-of-type(7) .tablabel{outline:2px solid var(--darkink);outline-offset:-5px;border-radius:7px}/*/STACK:STATE*/
 </style>
 </head>
-<body><div style="position:fixed;left:0;right:0;top:0;z-index:99999;background:#F74D3A;color:#fff;font:700 12px/1.4 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:.4rem 1rem;text-align:center">Staging &#183; not the live site &#183; forms + analytics disabled &#183; branch a2-integration &#183; built Aug 09, 17:36 PT</div><style>body{margin-top:2rem}</style>
+<body><div style="position:fixed;left:0;right:0;top:0;z-index:99999;background:#F74D3A;color:#fff;font:700 12px/1.4 -apple-system,Helvetica,Arial,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:.4rem 1rem;text-align:center">Staging &#183; not the live site &#183; forms + analytics disabled &#183; branch a2-integration &#183; built Aug 09, 18:56 PT</div><style>body{margin-top:2rem}</style>
 
 <nav class="topbar">
   <a class="wordmark" href="https://postfire.org" target="_blank" rel="noopener">PostFire</a>
@@ -345,7 +364,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
 </nav>
 
 <!-- Auto-stamped at build time (JGT rule) — regenerate index.html to refresh: -->
-<div class="stamp">Spokane Complex Fire · Washington — <b>updated Aug 9, 2026, 5:33 PM PT</b></div>
+<div class="stamp">Spokane Complex Fire · Washington — <b>updated Aug 9, 2026, 6:53 PM PT</b></div>
 <nav class="langbar" aria-label="Language"><span class="cur">English</span><a href="/washington-staging/es/" lang="es">Español</a><a href="/washington-staging/ru/" lang="ru">Русский</a><a href="/washington-staging/uk/" lang="uk">Українська</a></nav>
 
 <header class="hero">
@@ -366,10 +385,97 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
 </section>
 
 
-<!--STACK:RADIOS--><input class="sel" type="radio" name="sel" id="s0" role="tab" aria-controls="status" aria-label="FEMA status" aria-selected="true" checked><input class="sel" type="radio" name="sel" id="s1" role="tab" aria-controls="basics" aria-label="The basics" aria-selected="false"><input class="sel" type="radio" name="sel" id="s2" role="tab" aria-controls="scams" aria-label="Spot the scams" aria-selected="false"><input class="sel" type="radio" name="sel" id="s3" role="tab" aria-controls="gofundme" aria-label="GoFundMe" aria-selected="false"><input class="sel" type="radio" name="sel" id="s4" role="tab" aria-controls="ash" aria-label="Debris Removal" aria-selected="false"><input class="sel" type="radio" name="sel" id="s5" role="tab" aria-controls="resources" aria-label="Resources" aria-selected="false"><!--/STACK:RADIOS-->
+<!--STACK:RADIOS--><input class="sel" type="radio" name="sel" id="s0" role="tab" aria-controls="reentry" aria-label="Re-entry" aria-selected="true" checked><input class="sel" type="radio" name="sel" id="s1" role="tab" aria-controls="status" aria-label="FEMA status" aria-selected="false"><input class="sel" type="radio" name="sel" id="s2" role="tab" aria-controls="basics" aria-label="The basics" aria-selected="false"><input class="sel" type="radio" name="sel" id="s3" role="tab" aria-controls="scams" aria-label="Spot the scams" aria-selected="false"><input class="sel" type="radio" name="sel" id="s4" role="tab" aria-controls="gofundme" aria-label="GoFundMe" aria-selected="false"><input class="sel" type="radio" name="sel" id="s5" role="tab" aria-controls="ash" aria-label="Debris Removal" aria-selected="false"><input class="sel" type="radio" name="sel" id="s6" role="tab" aria-controls="resources" aria-label="Resources" aria-selected="false"><!--/STACK:RADIOS-->
 <div class="stackwrap">
-<div class="rail" role="tablist" aria-label="Page sections" aria-owns="s0 s1 s2 s3 s4 s5"><!--STACK:RAIL--><label class="layer fl" for="s0" style="--t:rgba(9,24,48,.67);--x:calc((100% - var(--tw)) * 0 / 5);--i:0"><span class="tabshape tone"></span><span class="tablabel"><span class="label">FEMA status</span></span><span class="edge tone"></span></label><label class="layer light" for="s1" style="--t:rgba(247,240,234,.45);--x:calc((100% - var(--tw)) * 3 / 5);--i:1"><span class="tabshape tone"></span><span class="tablabel"><span class="label">The basics</span></span><span class="edge tone"></span></label><label class="layer" for="s2" style="--t:rgba(9,24,48,.25);--x:calc((100% - var(--tw)) * 1 / 5);--i:2"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Spot the scams</span></span><span class="edge tone"></span></label><label class="layer light" for="s3" style="--t:rgba(247,240,234,.65);--x:calc((100% - var(--tw)) * 4 / 5);--i:3"><span class="tabshape tone"></span><span class="tablabel"><span class="label">GoFundMe</span></span><span class="edge tone"></span></label><label class="layer" for="s4" style="--t:rgba(9,24,48,.00);--x:calc((100% - var(--tw)) * 2 / 5);--i:4"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Debris Removal</span></span><span class="edge tone"></span></label><label class="layer fr light" for="s5" style="--t:rgba(247,240,234,.34);--x:calc((100% - var(--tw)) * 5 / 5);--i:5"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Resources</span></span><span class="edge tone"></span></label><!--/STACK:RAIL--></div>
-<section class="panel sheet tone" id="status" style="--t:rgba(9,24,48,.67)" role="tabpanel" aria-labelledby="s0">
+<div class="rail" role="tablist" aria-label="Page sections" aria-owns="s0 s1 s2 s3 s4 s5 s6"><!--STACK:RAIL--><label class="layer fl" for="s0" style="--t:rgba(9,24,48,.00);--x:calc((100% - var(--tw)) * 0 / 6);--i:0"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Re-entry</span></span><span class="edge tone"></span></label><label class="layer" for="s1" style="--t:rgba(9,24,48,.67);--x:calc((100% - var(--tw)) * 4 / 6);--i:1"><span class="tabshape tone"></span><span class="tablabel"><span class="label">FEMA status</span></span><span class="edge tone"></span></label><label class="layer light" for="s2" style="--t:rgba(247,240,234,.45);--x:calc((100% - var(--tw)) * 1 / 6);--i:2"><span class="tabshape tone"></span><span class="tablabel"><span class="label">The basics</span></span><span class="edge tone"></span></label><label class="layer" for="s3" style="--t:rgba(9,24,48,.25);--x:calc((100% - var(--tw)) * 5 / 6);--i:3"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Spot the scams</span></span><span class="edge tone"></span></label><label class="layer light" for="s4" style="--t:rgba(247,240,234,.65);--x:calc((100% - var(--tw)) * 2 / 6);--i:4"><span class="tabshape tone"></span><span class="tablabel"><span class="label">GoFundMe</span></span><span class="edge tone"></span></label><label class="layer fr" for="s5" style="--t:rgba(9,24,48,.00);--x:calc((100% - var(--tw)) * 6 / 6);--i:5"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Debris Removal</span></span><span class="edge tone"></span></label><label class="layer light" for="s6" style="--t:rgba(247,240,234,.34);--x:calc((100% - var(--tw)) * 3 / 6);--i:6"><span class="tabshape tone"></span><span class="tablabel"><span class="label">Resources</span></span><span class="edge tone"></span></label><!--/STACK:RAIL--></div>
+<section class="panel sheet tone" id="reentry" style="--t:rgba(9,24,48,.00)" role="tabpanel" aria-labelledby="s0">
+  <div class="wrap">
+    <h2 class="sectionhead">When you can go back</h2>
+    <p class="lead">There is nothing more natural or expected than the pull to home, no matter what state it may be in. If your home was in an evacuation zone of any kind, or bordering one, there's a higher than average chance ash and debris fell on your property and got inside — through your windows, or into your HVAC.</p>
+    <p class="lead">Contamination of any kind can be observed if you see ash that has come in through your doors and windows or you can smell smoke indoors.</p>
+
+    <h3 style="margin-bottom:2.4rem">Your Re-Entry Checklist:</h3>
+    <div class="item"><div class="num">1</div><div><p>Go back wearing proper PPE — Tyvek suit, gloves, mask, eye protection. It is always better to be safe than sorry.</p></div></div>
+    <div class="item"><div class="num">2</div><div><p>Document everything, thoroughly, before you clean.</p></div></div>
+    <div class="item"><div class="num">3</div><div><p>If you see visible ash and debris, or if your home smells like smoke, keep the housing you currently have as you begin to work with your insurance company.</p></div></div>
+    <div class="item"><div class="num">4</div><div><p>File your insurance claim.</p></div></div>
+    <div class="item"><div class="num">5</div><div><p>Ask for independent testing to be performed for clearance testing of your home.</p></div></div>
+
+    <p class="tell" style="margin-bottom:2.4rem"><b>Important:</b> an insurance adjuster is not qualified to tell you if you do or do not have smoke damage or contamination in your home. Both urgency and insurers can push you towards a fast wipe down when what's needed could be greater.</p>
+
+    <div class="scam">
+      <h3>Before you go, how to do it safely, and who should and shouldn't return</h3>
+      <p class="tell">Tyvek suits, gloves, a P100 respirator, eye protection and booties are what is defined as proper PPE to return after an urban wildfire. If a P100 is out of reach, an N95 is the floor, not cloth and not a surgical mask.</p>
+      <p class="tell">The American Red Cross is providing kits to any resident with ID, and they're free. You can collect one at a re-entry point before you go back in.</p>
+      <p class="tell">Please don't go back if you're pregnant, immunocompromised, an older adult, or bringing children or pets. There is nothing there today that's worth it, and someone else can take the photographs.</p>
+      <p class="tell">If anyone in your household has chemical sensitivities, asthma or another respiratory illness, or is immunocompromised, tell your insurance adjuster now and talk to your doctor before anyone moves back in. Water used to fight a fire causes mold, and mold plus fine soot is harder on those bodies than on others. That's a conversation worth having before you're standing in it.</p>
+    </div>
+
+    <div class="scam">
+      <h3>What you can check without touching anything</h3>
+      <p class="tell">Look at your window frames and sills, your door thresholds, and the vents and returns for your heating and cooling. Ash that got inside usually shows up in those places first. You can see all of it without putting a hand on any of it.</p>
+      <p class="tell">If you see ash or debris, don't touch it and don't clean it. Not on the first day back. What it is determines how it has to be handled, and that answer comes from testing rather than from looking.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Do Not Turn On Your HVAC</h3>
+      <p class="tell">This is the one people do by reflex, walking in and reaching for the thermostat.</p>
+      <p class="tell">If there's soot in your ducts, switching on the fan takes everything that settled in there and blows it back through every room in the house — including the rooms that were fine. It may need professional cleaning and inspection before it runs again safely.</p>
+      <p class="tell">And if it has been on the entire time you've been away, please turn it off and don't sleep there until your ducts have been checked for debris and ash — especially if you see ash inside your home or if your home smells like smoke.</p>
+      <p class="tell">Either way, document what you can see and then leave — that's true whether you rent or own.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Document everything, before any impulse to clean</h3>
+      <p class="tell">Photograph every room, wide shots and close ones, and video walking through if you can manage that. This is your insurance record if you need it, and the "before" only exists once.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Photograph the food before you throw it out</h3>
+      <p class="tell">Smoke gets through ordinary packaging. Anything in paper, cardboard or plastic isn't safe to eat, even when the box looks untouched.</p>
+      <p class="tell">Before any of it goes in the bin, photograph it and write down what was there. Food is part of your contents claim, and groceries thrown out without a photograph are money you can't ask for. It feels absurd to stand in the middle of all this photographing cereal boxes. Do it anyway — it's one of the few parts of a claim that's easy to prove and easy to lose.</p>
+      <p class="tell">Anything that lost power for more than a couple of hours goes as well, along with anything left open to smoke.</p>
+      <p class="tell">If you have EBT benefits, you are eligible for this contaminated food to be replaced, just reach out to them.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Fill out the state's damage survey</h3>
+      <p class="tell">If you saw ash or debris, fill out the Washington Military Department's <a href="https://arcg.is/1T4Oq42" target="_blank" rel="noopener">Residential Damage Self-Assessment Survey</a>.</p>
+      <p class="tell">It's how households get counted, and the count is what the state uses to make its case for a major disaster declaration — the one that opens Individual Assistance. When it asks about your level of impact, "don't know" and "still evacuated" are real answers. They're honest, and your household still gets counted.</p>
+      <p class="tell">One thing to know so you don't get caught out: filling this out is not applying for assistance. It doesn't register you for anything, state or federal. When applications open, you still apply.</p>
+    </div>
+
+    <div class="scam">
+      <h3>File your claim, and ask what it should be covering now</h3>
+      <p class="tell">If you haven't opened a claim, now is the time.</p>
+      <p class="tell">Ask specifically about Additional Living Expenses — sometimes called loss of use. That's the part of your policy meant for what you're spending while you can't be home, and the clock on it started the day of the loss, not the day you call. What it actually covers is bounded by your policy, usually as a dollar limit, a number of months, or both, so ask for your limit in those terms and get the answer in writing. Ask what documentation they want for the housing you're in right now.</p>
+      <p class="tell">It's completely fine to tell them health and safety information is still coming out and you'll update them as you know more. You don't have to have answers you don't have yet.</p>
+      <p class="tell">Then get off the phone and email them a summary of what was said. Paper trails are the most useful thing you can build in an insurance claim, and the sooner you start one, the more of a habit it becomes.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Testing, and who can actually clear your home</h3>
+      <p class="tell">Testing matters more than anything else on this page, and it's worth knowing who is qualified to do it.</p>
+      <p class="tell">That person is a certified industrial hygienist, and what they do is swab surfaces for soot, char and ash or take air samples for what wildfire smoke leaves behind.</p>
+      <p class="tell">Ask your insurer for that report before any remediation and again after. You aren't required to use the tester or the contractor they send you — Washington's Office of the Insurance Commissioner is clear you can choose your own licensed contractor — and if they won't cover the testing, some people pay for it and submit for reimbursement.</p>
+      <p class="tell">Ask for sampling room by room instead of one combined sample for the house. A mixed sample can average one bad room into a number that looks fine.</p>
+      <p class="tell">Your home is confirmed livable by the report that comes after remediation, not by how it looks or how it smells. If the first round doesn't clear, another round is ordinary. Which is why step 3 up there is what it is: hold the housing you have. Don't hand back the room while you're waiting on results, and plan for this in months rather than weeks.</p>
+    </div>
+
+    <div class="scam">
+      <h3>When you leave</h3>
+      <p class="tell">Keep the shoes and clothes you wore out of wherever you're sleeping. Ideally they get washed right away and don't go in with anything clean.</p>
+    </div>
+
+    <div class="scam">
+      <h3>Don't do this part in silence</h3>
+      <p class="tell">Find the other households dealing with the same thing. It's the hardest-won lesson out of Los Angeles: the people in the same fight will tell you what actually worked, and they'll tell you faster than anyone official can.</p>
+      <p class="tell">If you need someone tonight, <a href="tel:988">988</a> picks up. The Disaster Distress Helpline is <a href="tel:+18009855990">1-800-985-5990</a>. For local resources, <a href="tel:211">211</a>.</p>
+    </div>
+  </div>
+</section>
+
+<section class="panel sheet tone" id="status" style="--t:rgba(9,24,48,.67)" role="tabpanel" aria-labelledby="s1">
   <div class="wrap"><div class="inner">
         <h2>Federal disaster declaration: yes, but not the one for individual assistance</h2>
     <p>On August 3, the President approved a federal emergency declaration for Washington (EM-3650). It covers six counties and three tribal nations, Spokane among them. Every member of the state's congressional delegation, both parties, had signed a letter asking for it to be approved quickly. That aid matters — <b>and it's not yet the declaration that opens help for your household.</b></p>
@@ -381,7 +487,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   </div></div>
 </section>
 
-<section class="panel sheet tone light" id="basics" style="--t:rgba(247,240,234,.45)" role="tabpanel" aria-labelledby="s1">
+<section class="panel sheet tone light" id="basics" style="--t:rgba(247,240,234,.45)" role="tabpanel" aria-labelledby="s2">
   <div class="wrap">
     <h2 class="sectionhead">The <span class="ox">basics</span></h2>
     <p class="lead">You are not expected to know how to do this, and you do not have to do everything at once. We've broken out your immediate steps and we will follow up with what is next. The best thing you can do for yourself and your loved ones is get somewhere stable and safe, eat, and focus on getting some sleep tonight.</p>
@@ -420,7 +526,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   </div>
 </section>
 
-<section class="panel sheet tone" id="scams" style="--t:rgba(9,24,48,.25)" role="tabpanel" aria-labelledby="s2">
+<section class="panel sheet tone" id="scams" style="--t:rgba(9,24,48,.25)" role="tabpanel" aria-labelledby="s3">
   <div class="wrap">
     <h2 class="sectionhead">Spot the <span class="ox">scams</span></h2>
     <p class="lead">After every fire, the scammers arrive before the insurance checks do. These are the ways they come into a community:</p>
@@ -464,7 +570,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   </div>
 </section>
 
-<section class="panel sheet tone light" id="gofundme" style="--t:rgba(247,240,234,.65)" role="tabpanel" aria-labelledby="s3">
+<section class="panel sheet tone light" id="gofundme" style="--t:rgba(247,240,234,.65)" role="tabpanel" aria-labelledby="s4">
   <div class="wrap">
     <h2 class="sectionhead">If you're starting a <span class="ox">GoFundMe</span></h2>
 
@@ -483,7 +589,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   </div>
 </section>
 
-<section class="panel sheet tone" id="ash" style="--t:rgba(9,24,48,.00)" role="tabpanel" aria-labelledby="s4">
+<section class="panel sheet tone" id="ash" style="--t:rgba(9,24,48,.00)" role="tabpanel" aria-labelledby="s5">
   <div class="wrap">
     <h2 class="sectionhead">Before anyone clears the <span class="ox">ash</span></h2>
     <p class="lead">This isn't something you have to handle today. It matters the moment someone offers to start clearing your lot — and knowing it now is what keeps that conversation from going sideways.</p>
@@ -509,7 +615,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
   </div>
 </section>
 
-<section class="panel sheet tone light" id="resources" style="--t:rgba(247,240,234,.34)" role="tabpanel" aria-labelledby="s5">
+<section class="panel sheet tone light" id="resources" style="--t:rgba(247,240,234,.34)" role="tabpanel" aria-labelledby="s6">
   <div class="wrap">
         <details class="res"><summary><h3>If your home was destroyed or badly damaged</h3></summary><p>Tzu Chi USA has opened <a href="https://tzuchi.us/sanjose/disaster-relief" target="_blank" rel="noopener">emergency financial assistance</a> to Washington wildfire families. Renters and homeowners both. It has to have been your primary residence, it has to have been destroyed or badly damaged, and it's one application per household.</p><p>If something about your situation doesn't fit the form, email relief-nc@tzuchi.us and ask before you decide you don't qualify.</p></details>
     <details class="res"><summary><h3>Emergency shelter</h3></summary><p>The evacuation shelter is at the Spokane Convention Center, 334 W Spokane Falls Blvd, Spokane. Parking is free, and <b>pets are welcome</b>.</p><p>If you evacuated from south Stevens County, the Red Cross has a second shelter at Jenkins High School in Chewelah.</p><p>To check what's open before you drive, call the Red Cross at <a href="tel:+15097836195">(509) 783-6195</a>. The shelter at Spokane Falls Community College closed on August 1 — everyone there moved to the Convention Center.</p><p>Shelters move — this is current as of August 3. Check with <a href="https://www.spokanecounty.gov/5498/Emergency-Management" target="_blank" rel="noopener">Spokane County Emergency Management</a> before you go.</p></details>
@@ -663,7 +769,7 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
 <script>
 /* A2 deep links: #section opens its folder; picking a folder updates the hash. */
 (function(){
-  var ids=["status","basics","scams","gofundme","ash","resources"];
+  var ids=["reentry","status","basics","scams","gofundme","ash","resources"];
   function openFromHash(){
     var i=ids.indexOf(location.hash.replace("#",""));
     if(i>-1){var r=document.getElementById("s"+i);if(r&&!r.checked)r.checked=true;}
@@ -684,6 +790,12 @@ input.sel{position:absolute;opacity:0;width:1px;height:1px}
      (viewport-scaled hero type, ribbons, font swaps), nudge the stack onto a
      whole pixel. Runs at load, resize, and after webfonts settle. */
   var wrap=document.querySelector(".stackwrap");
+  function chrome(){
+    var tb=document.querySelector(".topbar");
+    document.documentElement.style.setProperty("--tb",(tb?tb.offsetHeight:0)+"px");
+  }
+  chrome();
+  window.addEventListener("resize",chrome);
   function snap(){
     if(!wrap)return;
     wrap.style.marginTop="0px";
